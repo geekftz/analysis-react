@@ -1,0 +1,259 @@
+<!--
+ * @Author: hackftz
+ * @Date: 2021-03-15 13:52:58
+ * @LastEditTime: 2021-03-21 14:30:05
+ * @LastEditors: hackftz
+ * @FilePath: /react-analysis/index.html
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+
+    <style>
+      body {
+        height: 100vh;
+        width: 100vw;
+      }
+      .modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 200px;
+        width: 200px;
+      }
+    </style>
+
+    <script src="./react.development.js"></script>
+    <script src="./react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="./babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState, useMemo, useCallback, Component } = React;
+
+      // function Example() {
+      //     const [count, setCount] = useState(1);
+      //     const [val, setValue] = useState('');
+
+      //     const getNum = useMemo(() => {
+      //       return Array.from({length: count * 100}, (v, i) => i).reduce((a, b) => a+b)
+      //     }, [count])
+
+      //     return <div>
+      //         <h4>总和：{getNum}</h4>
+      //         <div>
+      //             <button onClick={() => setCount(count + 1)}>+1</button>
+      //             <input value={val} onChange={event => setValue(event.target.value)}/>
+      //         </div>
+      //     </div>;
+      // }
+
+      // function Parent() {
+      //   const [count, setCount] = useState(1);
+      //   const [val, setValue] = useState('');
+
+      //   const getNum = useCallback(() => {
+      //     return Array.from({ length: count * 100 }, (v, i) => i).reduce((a, b) => a + b);
+      //   }, [count]);
+
+      //   return (
+      //     <div>
+      //       <Child getNum={getNum} />
+      //       <div>
+      //         <button onClick={() => setCount(count + 1)}>+1</button>
+      //         <input value={val} onChange={event => setValue(event.target.value)} />
+      //       </div>
+      //     </div>
+      //   );
+      // }
+
+      // const Child = React.memo(function ({ getNum }: any) {
+      //   return <h4>总和：{getNum()}</h4>;
+      // });
+
+      class Parent extends Component {
+        constructor(props) {
+          super(props);
+
+          this.state = { count: 1 };
+        }
+
+        componentDidMount() {
+          // setTimeout(() => {
+          //   this.setState({ name: 'haha' });
+          //   console.log(this.state.name);
+          // }, 500);
+          setTimeout(() => {
+            this.setState(
+              (state, props) => {
+                return { name: 'haha' };
+              },
+              () => {
+                console.log('had change');
+              }
+            );
+            console.log(this.state.name);
+          }, 500);
+        }
+
+        add() {
+          // this.setState({ count: this.state.count + 1 });
+          // this.setState({ count: this.state.count + 1 });
+          // this.setState({ count: this.state.count + 1 });
+          // this.setState((state, props) => {
+          //   return { count: state.count + 1 };
+          // });
+          // this.setState((state, props) => {
+          //   return { count: state.count + 1 };
+          // });
+          // this.setState((state, props) => {
+          //   return { count: state.count + 1 };
+          // });
+          // this.setState(this.increment);
+          // this.setState({ count: this.state.count + 1 });
+          // this.setState(this.increment);
+        }
+
+        increment(state, props) {
+          return {
+            count: state.count + 1,
+          };
+        }
+
+        handleClick() {
+          this.setState(this.increment);
+          this.setState({ count: this.state.count + 1 });
+          this.setState(this.increment);
+        }
+
+        render() {
+          const { count } = this.state;
+          return (
+            <div>
+              <p>{count}</p>
+              <button onClick={() => this.add()}>add</button>
+            </div>
+          );
+        }
+      }
+
+      // function withOnChange(WrappedComponent) {
+      //   return class extends React.Component {
+      //     constructor(props) {
+      //       super(props);
+      //       this.state = {
+      //         name: '',
+      //       };
+      //     }
+      //     onChange = () => {
+      //       this.setState({
+      //         name: '大板栗',
+      //       });
+      //     };
+      //     render() {
+      //       const newProps = {
+      //         name: {
+      //           value: this.state.name,
+      //           onChange: this.onChange,
+      //         },
+      //       };
+      //       return <WrappedComponent {...this.props} {...newProps} />;
+      //     }
+      //   };
+      // }
+
+      // const NameInput = props => <input name="name" {...props.name} />;
+
+      // const High = withOnChange(NameInput);
+
+      // function HigherOrderComponent(WrappedComponent) {
+      //   return class extends React.Component {
+      //     executeInstanceMethod = wrappedComponentInstance => {
+      //       console.log('%c⧭', 'color: #e50000', wrappedComponentInstance);
+      //       // wrappedComponentInstance.someMethod();
+      //     };
+      //     render() {
+      //       return <WrappedComponent {...this.props} children="haha" ref={this.executeInstanceMethod} />;
+      //     }
+      //   };
+      // }
+
+      // const FancyButton = React.forwardRef((props, ref) => (
+      //   <button ref={ref} className="FancyButton">
+      //     {props.children}
+      //   </button>
+      // ));
+
+      // // You can now get a ref directly to the DOM button:
+      // const ref = React.createRef();
+      // <FancyButton ref={ref}>Click me!</FancyButton>;
+
+      // const Com = HigherOrderComponent(FancyButton);
+
+      class FuckEvent extends React.PureComponent {
+        state = {
+          showBox: false,
+        };
+        componentDidMount() {
+          document.body.addEventListener('click', this.handleClickBody, false);
+        }
+        componentWillUnmount() {
+          document.body.removeEventListener('click', this.handleClickBody, false);
+        }
+        handleClickBody = () => {
+          console.log(123123);
+          this.setState({
+            showBox: false,
+          });
+        };
+        handleClickButton = e => {
+          e.stopPropagation();
+          console.log('%c⧭', 'color: #d90000', e);
+          this.setState(
+            {
+              showBox: true,
+            },
+            () => {
+              console.log(this.state.showBox);
+            }
+          );
+        };
+
+        render() {
+          const { showBox } = this.state;
+          return (
+            <div>
+              <button onClick={e => this.handleClickButton(e)}>点击我显示弹窗</button>
+
+              {showBox ? (
+                <div className="modal" onClick={e => e.stopPropagation()}>
+                  我是弹窗
+                </div>
+              ) : null}
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<FuckEvent />, document.getElementById('root'));
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this section for a production-ready setup with JSX:
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      In a larger project, you can use an integrated toolchain that includes JSX instead:
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>
